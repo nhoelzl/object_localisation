@@ -33,6 +33,7 @@ def plotPerColumnDistribution(df, nGraphShown, nGraphPerRow):
         plt.xticks(rotation=90)
         plt.title(f'{columnNames[i]} (column {i})')
     plt.tight_layout(pad=1.0, w_pad=1.0, h_pad=1.0)
+    plt.savefig('../data/plots/category_distribution.png')
     plt.show()
 
 
@@ -52,6 +53,7 @@ def plotCorrelationMatrix(df, graphWidth):
     plt.gca().xaxis.tick_bottom()
     plt.colorbar(corrMat)
     plt.title(f'Correlation Matrix for {filename}', fontsize=15)
+    plt.savefig('../data/plots/correlation_matrix.png')
     plt.show()
 
 
@@ -71,6 +73,7 @@ def plotScatterMatrix(df, plotSize, textSize):
         ax[i, j].annotate('Corr. coef = %.3f' % corrs[i, j], (0.8, 0.2), xycoords='axes fraction',
                           ha='center', va='center', size=textSize)
     plt.suptitle('Scatter and Density Plot')
+    plt.savefig('../data/plots/scatter_matrix.png')
     plt.show()
 
 
