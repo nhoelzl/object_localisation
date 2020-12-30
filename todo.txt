@@ -1,0 +1,23 @@
+Die Projektarbeit sollte sich dabei mit den nachfolgenden Aspekten beschäftigen:
+
+* Zweckmäßige Vorverarbeitung
+* Anwendung eines NN (selbst trainiert oder fertiges Modell oder adaptiertes Modell) auf n
+Objekte in den Bilddaten
+* Ausführliche Tests mit zweckmäßigen Fehlermetriken (z.B. Sensitivität, Spezifität, Jaccard
+Index, DICE Koeffizient, normalized surface distance (NSD),...)
+* Fokus auf Datenaugmentierung – einerseits ev. für das Training, aber auch, um auch Tests
+mit unbekannten Körperorientierungen (z.B. rotierte Fußgänger) oder unbekannter Größe
+durchführen zu können.
+* Während in der ersten Phase die bereitgestellten Daten zum Training / zur Entwicklung
+(Aufteilung in Training, Validation, Test) verwendet werden sollen folgt im Laufe des
+Semesters die Testdatenmenge zur Beurteilung der Modellgenauigkeit.
+* Zum Zwecke der Vergleichbarkeit werden die Ergebnisse in standardisierter Form erwartet,
+nämlich:
+o Binäre Maske bei der Segmentierung [0;255], 8bit unsigned mit 255==FG und 0 ==
+BG. Eine Unterscheidung der Personen (vgl. Region Labelling) ist nicht notwendig
+o Bei Lokalisierung: up_left_x, up_left_y, low_right_x, low_right_y des Rechtecks als
+Zeile in einem TXT-File mit „,“ als Separator, z.B. „481,35,765,464“. Für jedes Objekt
+separate Zeile.
+o Bei Klassifikation: TXT-File mit numerischer Kennung je Klasse in separater Zeile, z.B.
+„0“ für Männlich.
+* Fokussieren Sie auf die Diskussion der Ergebnisse
