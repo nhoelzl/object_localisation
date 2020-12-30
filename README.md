@@ -8,7 +8,6 @@ We recommend using Python version 3.6.x. All necessary libraries will be collect
 ## Data:
 We are using the MPII Human Pose dataset which is available [here](http://human-pose.mpi-inf.mpg.de/#download).
 
-
 ## Contributers:
 - Nicole Hölzl @nhoelzl
 - Micha Birklbauer @t0xic-m
