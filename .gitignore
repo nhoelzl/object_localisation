@@ -131,3 +131,7 @@ dmypy.json
 # ignore large data files
 /data/images
 /data/mpii_human_pose_v1_u12_2
+
+# Micha Notes
+.NOTES.txt
+Projects_2020.pdf
