@@ -15,6 +15,7 @@ import cv2
 import imageio
 import numpy as np
 import tensorflow_hub as hub
+from matplotlib import pyplot as plt
 
 print("loading model..."")
 model = hub.load("https://tfhub.dev/tensorflow/efficientdet/d3/1")
@@ -32,16 +33,23 @@ def get_box(filename):
         return None
 
 # return image with bounding box + save to current directory
-def visualize_bbox(filename, bbox = None, save = True):
+def visualize_bbox(filename, bbox = None, show = False, save = True):
     img = imageio.imread(filename, as_gray = False)
     width = img.shape[1]
     height = img.shape[0]
-    if bbox:
+    if bbox is not None:
         start_x = round(bbox[1] * width)
         start_y = round(bbox[0] * height)
         end_x = round(bbox[3] * width)
         end_y = round(bbox[2] * height)
-        new_img = cv2.rectangle(img, (start_x, start_y), (end_x, end_y), (0, 0, 255), 2)
+        new_img = img.copy()
+        new_img = cv2.rectangle(new_img, (start_x, start_y), (end_x, end_y), (0, 0, 255), 2)
+        if show:
+            plt.figure()
+            f, axarr = plt.subplots(1,2)
+            axarr[0].imshow(img)
+            axarr[1].imshow(new_img)
+            plt.show()
         if save:
             imageio.imwrite(filename.split(".")[0] + "_bb.jpg", new_img)
         return new_img
