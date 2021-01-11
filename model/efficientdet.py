@@ -16,14 +16,13 @@ import imageio
 import numpy as np
 import tensorflow_hub as hub
 
-print('loading model...')
+print("loading model..."")
 model = hub.load("https://tfhub.dev/tensorflow/efficientdet/d3/1")
-print('model successfully loaded!')
-
+print("model successfully loaded!")
 
 # return bounding box in shape of [ymin, xmin, ymax, xmax]
 def get_box(filename):
-    img = imageio.imread(filename, as_gray=False)
+    img = imageio.imread(filename, as_gray = False)
     img = np.reshape(img, [1, img.shape[0], img.shape[1], 3])
     prediction = model(img)
 
@@ -32,17 +31,22 @@ def get_box(filename):
     else:
         return None
 
-
 # return image with bounding box + save to current directory
-def visualize_bbox(filename, bbox, save=True):
-    img = imageio.imread(filename, as_gray=False)
+def visualize_bbox(filename, bbox = None, save = True):
+    img = imageio.imread(filename, as_gray = False)
     width = img.shape[1]
     height = img.shape[0]
-    start_x = round(bbox[1] * width)
-    start_y = round(bbox[0] * height)
-    end_x = round(bbox[3] * width)
-    end_y = round(bbox[2] * height)
-    new_img = cv2.rectangle(img, (start_x, start_y), (end_x, end_y), (0, 0, 255), 2)
-    if save:
-        imageio.imwrite(filename.split(".")[0] + "_bb.jpg", new_img)
-    return new_img
+    if bbox:
+        start_x = round(bbox[1] * width)
+        start_y = round(bbox[0] * height)
+        end_x = round(bbox[3] * width)
+        end_y = round(bbox[2] * height)
+        new_img = cv2.rectangle(img, (start_x, start_y), (end_x, end_y), (0, 0, 255), 2)
+        if save:
+            imageio.imwrite(filename.split(".")[0] + "_bb.jpg", new_img)
+        return new_img
+    else:
+        print("WARNING: No bounding box provided!")
+        if save:
+            imageio.imwrite(filename.split(".")[0] + "_bb.jpg", img)
+        return img
