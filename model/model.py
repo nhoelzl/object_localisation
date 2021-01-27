@@ -21,18 +21,9 @@ import tensorflow_hub as hub
     # https://hub.tensorflow.google.cn/tensorflow/efficientnet/b0/classification/1
 
 
-# test loading efficientdet model 
-# module_spec = hub.load_module_spec("https://hub.tensorflow.google.cn/tensorflow/efficientnet/b3/classification/1")
-# height, width = hub.get_expected_image_size(module_spec)
-# images = ...  # A batch of images with shape [batch_size, height, width, 3].
-print('loading model...')
-# module = hub.Module("https://hub.tensorflow.google.cn/tensorflow/efficientnet/b3/classification/1", trainable=True)
-# module = hub.Module(module_spec)
-# m = tf.keras.Sequential([
-#    hub.KerasLayer("https://hub.tensorflow.google.cn/tensorflow/efficientnet/b7/classification/1")
-# ])
-print('model successfully loaded!')
-# logits = module(images)   # A batch with shape [batch_size, num_classes].
+
+
+
 
 
 
