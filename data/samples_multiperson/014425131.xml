@@ -1,0 +1,38 @@
+<annotation>
+	<folder>samples</folder>
+	<filename>014425131.jpg</filename>
+	<path>D:\Users\Micha\Downloads\DSE 3. Semester\Computer Vision\mpii_human_pose_v1\samples\014425131.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1280</width>
+		<height>720</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>person</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>357</xmin>
+			<ymin>327</ymin>
+			<xmax>489</xmax>
+			<ymax>538</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>person</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>400</xmin>
+			<ymin>155</ymin>
+			<xmax>524</xmax>
+			<ymax>352</ymax>
+		</bndbox>
+	</object>
+</annotation>

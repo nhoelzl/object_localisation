@@ -1,3 +1,5 @@
+![Python CI](https://github.com/nhoelzl/object_localisation/workflows/Python%20CI/badge.svg?branch=main&event=push)
+
 # Object Localisation 📦🔎
 A Computer Vision project (LOK_1) to mark objects with a bounding box as close-fitting as possible. 
 
