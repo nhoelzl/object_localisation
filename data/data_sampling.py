@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     print(len(images))
 
-    samples = random.sample(images, 200)
+    samples = random.sample(images, 500)
 
     print(len(samples))
 
