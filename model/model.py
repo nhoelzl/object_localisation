@@ -19,9 +19,12 @@ import tensorflow_hub as hub
     # https://hub.tensorflow.google.cn/tensorflow/resnet_50/classification/1
     # https://hub.tensorflow.google.cn/google/imagenet/resnet_v2_50/classification/4
     # https://hub.tensorflow.google.cn/tensorflow/efficientnet/b0/classification/1
+    # Trainable Yolo Modell and Har - Cascade
+    # Data Augmentation - Flip Image, Mean Substraction
 
 
-
+    # pick 10 images with one person on it for testing
+    
 
 
 
