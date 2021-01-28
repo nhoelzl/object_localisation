@@ -11,7 +11,7 @@
 # https://github.com/t0xic-m/
 # micha.birklbauer@gmail.com
 
-import cv2
+import cv2 # opencv-python
 import imageio
 import numpy as np
 import tensorflow_hub as hub
