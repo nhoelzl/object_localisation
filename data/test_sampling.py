@@ -9,13 +9,13 @@
 
 import os
 import random
-from shutil import copyfile
+from shutil import move
 
 if __name__ == "__main__":
 
     random.seed(1337)
 
-    dirname = "images"
+    dirname = "samples"
     images = []
     for dirpath, dirnames, filenames in os.walk(dirname):
         for fname in filenames:
@@ -23,11 +23,11 @@ if __name__ == "__main__":
 
     print(len(images))
 
-    samples = random.sample(images, 500)
+    samples = random.sample(images, 50)
 
     print(len(samples))
 
-    os.mkdir("samples")
+    os.mkdir("samples_test")
 
     for sample in samples:
-        copyfile(sample, sample.replace("images", "samples"))
+        move(sample, sample.replace("samples", "samples_test"))
