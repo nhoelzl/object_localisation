@@ -3,6 +3,7 @@ Created on 30.12.2020, by Nicole Hölzl
 """
 
 # import packages
+import re
 import tensorflow as tf
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -485,7 +486,7 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                                          boxes_dicts):
         img = Image.open(img_name)
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype(font='../data/files/futur.ttf',
+        font = ImageFont.truetype(font='data/files/futur.ttf',
                                   size=(img.size[0] + img.size[1]) // 100)
         resize_factor = \
             (img.size[0] / model_size[0], img.size[1] / model_size[1])
@@ -512,8 +513,8 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                               font=font)
 
         # display image
-        Image.show(img)
-        Image.SAVE(img)
+        img_number = int(re.search(r'\d+', img_name)[0])
+        img.save(f"data/results_yolo/{img_number}.jpg")
 
 
 # ----- CONVERTING WEIGHTS TO TENSORFLOW FORMAT ----

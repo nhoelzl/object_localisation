@@ -9,8 +9,9 @@ import yolov2 as yolo
 import glob
 
 print(tf.__version__)
-
 tf.compat.v1.disable_eager_execution()
+
+# https://github.com/shahkaran76/yolo_v3-tensorflow-ipynb
 
 # ----- VARIABLES -------
 _BATCH_NORM_DECAY = 0.9
