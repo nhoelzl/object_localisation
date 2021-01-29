@@ -137,3 +137,4 @@ dmypy.json
 .NOTES.txt
 Projects_2020.pdf
 .vscode
+*.weights

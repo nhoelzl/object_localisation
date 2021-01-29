@@ -13,8 +13,6 @@ from PIL import Image, ImageDraw, ImageFont
 # https://github.com/shahkaran76/yolo_v3-tensorflow-ipynb/blob/master/YOLO%20Tensorflow.ipynb
 # Data Augmentation - Flip Image, Mean Substraction
 
-# tf_upgrade_v2 --infile=yolo.py --outfile=yolov2.py
-
 # ----- VARIABLES -------
 _BATCH_NORM_DECAY = 0.9
 _BATCH_NORM_EPSILON = 1e-05
@@ -28,7 +26,7 @@ _MODEL_SIZE = (416, 416)
 # ----- BATCH NORMALIZATION -----
 def batch_norm(inputs, training, data_format):
     """Performs a batch normalization using a standard set of parameters."""
-    return tf.layers.batch_normalization(
+    return tf.compat.v1.layers.batch_normalization(
         inputs=inputs, axis=1 if data_format == 'channels_first' else 3,
         momentum=_BATCH_NORM_DECAY, epsilon=_BATCH_NORM_EPSILON,
         scale=True, training=training)
@@ -51,11 +49,11 @@ def fixed_padding(inputs, kernel_size, data_format):
     pad_end = pad_total - pad_beg
 
     if data_format == 'channels_first':
-        padded_inputs = tf.pad(inputs, [[0, 0], [0, 0],
+        padded_inputs = tf.pad(tensor=inputs, paddings=[[0, 0], [0, 0],
                                         [pad_beg, pad_end],
                                         [pad_beg, pad_end]])
     else:
-        padded_inputs = tf.pad(inputs, [[0, 0], [pad_beg, pad_end],
+        padded_inputs = tf.pad(tensor=inputs, paddings=[[0, 0], [pad_beg, pad_end],
                                         [pad_beg, pad_end], [0, 0]])
     return padded_inputs
 
@@ -65,7 +63,7 @@ def conv2d_fixed_padding(inputs, filters, kernel_size, data_format, strides=1):
     if strides > 1:
         inputs = fixed_padding(inputs, kernel_size, data_format)
 
-    return tf.layers.conv2d(
+    return tf.compat.v1.layers.conv2d(
         inputs=inputs, filters=filters, kernel_size=kernel_size,
         strides=strides, padding=('SAME' if strides == 1 else 'VALID'),
         use_bias=False, data_format=data_format)
@@ -211,14 +209,14 @@ def yolo_layer(inputs, n_classes, anchors, img_size, data_format):
     """
     n_anchors = len(anchors)
 
-    inputs = tf.layers.conv2d(inputs, filters=n_anchors * (5 + n_classes),
+    inputs = tf.compat.v1.layers.conv2d(inputs, filters=n_anchors * (5 + n_classes),
                               kernel_size=1, strides=1, use_bias=True,
                               data_format=data_format)
 
     shape = inputs.get_shape().as_list()
     grid_shape = shape[2:4] if data_format == 'channels_first' else shape[1:3]
     if data_format == 'channels_first':
-        inputs = tf.transpose(inputs, [0, 2, 3, 1])
+        inputs = tf.transpose(a=inputs, perm=[0, 2, 3, 1])
     inputs = tf.reshape(inputs, [-1, n_anchors * grid_shape[0] * grid_shape[1],
                                  5 + n_classes])
 
@@ -239,7 +237,7 @@ def yolo_layer(inputs, n_classes, anchors, img_size, data_format):
     box_centers = (box_centers + x_y_offset) * strides
 
     anchors = tf.tile(anchors, [grid_shape[0] * grid_shape[1], 1])
-    box_shapes = tf.exp(box_shapes) * tf.to_float(anchors)
+    box_shapes = tf.exp(box_shapes) * tf.cast(anchors, dtype=tf.float32)
     confidence = tf.nn.sigmoid(confidence)
 
     classes = tf.nn.sigmoid(classes)
@@ -254,17 +252,17 @@ def yolo_layer(inputs, n_classes, anchors, img_size, data_format):
 def upsample(inputs, out_shape, data_format):
     """Upsamples to `out_shape` using nearest neighbor interpolation."""
     if data_format == 'channels_first':
-        inputs = tf.transpose(inputs, [0, 2, 3, 1])
+        inputs = tf.transpose(a=inputs, perm=[0, 2, 3, 1])
         new_height = out_shape[3]
         new_width = out_shape[2]
     else:
         new_height = out_shape[2]
         new_width = out_shape[1]
 
-    inputs = tf.image.resize_nearest_neighbor(inputs, (new_height, new_width))
+    inputs = tf.image.resize(inputs, (new_height, new_width), method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
     if data_format == 'channels_first':
-        inputs = tf.transpose(inputs, [0, 3, 1, 2])
+        inputs = tf.transpose(a=inputs, perm=[0, 3, 1, 2])
 
     return inputs
 
@@ -304,9 +302,9 @@ def non_max_suppression(inputs, n_classes, max_output_size, iou_threshold,
     batch = tf.unstack(inputs)
     boxes_dicts = []
     for boxes in batch:
-        boxes = tf.boolean_mask(boxes, boxes[:, 4] > confidence_threshold)
-        classes = tf.argmax(boxes[:, 5:], axis=-1)
-        classes = tf.expand_dims(tf.to_float(classes), axis=-1)
+        boxes = tf.boolean_mask(tensor=boxes, mask=boxes[:, 4] > confidence_threshold)
+        classes = tf.argmax(input=boxes[:, 5:], axis=-1)
+        classes = tf.expand_dims(tf.cast(classes, dtype=tf.float32), axis=-1)
         boxes = tf.concat([boxes[:, :5], classes], axis=-1)
 
         boxes_dict = dict()
@@ -314,7 +312,7 @@ def non_max_suppression(inputs, n_classes, max_output_size, iou_threshold,
             mask = tf.equal(boxes[:, 5], cls)
             mask_shape = mask.get_shape()
             if mask_shape.ndims != 0:
-                class_boxes = tf.boolean_mask(boxes, mask)
+                class_boxes = tf.boolean_mask(tensor=boxes, mask=mask)
                 boxes_coords, boxes_conf_scores, _ = tf.split(class_boxes,
                                                               [4, 1, -1],
                                                               axis=-1)
@@ -375,9 +373,9 @@ class Yolo_v3:
             A list containing class-to-boxes dictionaries
                 for each sample in the batch.
         """
-        with tf.variable_scope('yolo_v3_model'):
+        with tf.compat.v1.variable_scope('yolo_v3_model'):
             if self.data_format == 'channels_first':
-                inputs = tf.transpose(inputs, [0, 3, 1, 2])
+                inputs = tf.transpose(a=inputs, perm=[0, 3, 1, 2])
 
             inputs = inputs / 255
 
@@ -549,7 +547,7 @@ def load_weights(variables, file_name):
                 num_params = np.prod(shape)
                 var_weights = weights[ptr:ptr + num_params].reshape(shape)
                 ptr += num_params
-                assign_ops.append(tf.assign(var, var_weights))
+                assign_ops.append(tf.compat.v1.assign(var, var_weights))
 
             shape = conv_var.shape.as_list()
             num_params = np.prod(shape)
@@ -557,7 +555,7 @@ def load_weights(variables, file_name):
                 (shape[3], shape[2], shape[0], shape[1]))
             var_weights = np.transpose(var_weights, (2, 3, 1, 0))
             ptr += num_params
-            assign_ops.append(tf.assign(conv_var, var_weights))
+            assign_ops.append(tf.compat.v1.assign(conv_var, var_weights))
 
         # Loading weights for Yolo part.
         # 7th, 15th and 23rd convolution layer has biases and no batch norm.
@@ -577,7 +575,7 @@ def load_weights(variables, file_name):
                     num_params = np.prod(shape)
                     var_weights = weights[ptr:ptr + num_params].reshape(shape)
                     ptr += num_params
-                    assign_ops.append(tf.assign(var, var_weights))
+                    assign_ops.append(tf.compat.v1.assign(var, var_weights))
 
                 shape = conv_var.shape.as_list()
                 num_params = np.prod(shape)
@@ -585,14 +583,14 @@ def load_weights(variables, file_name):
                     (shape[3], shape[2], shape[0], shape[1]))
                 var_weights = np.transpose(var_weights, (2, 3, 1, 0))
                 ptr += num_params
-                assign_ops.append(tf.assign(conv_var, var_weights))
+                assign_ops.append(tf.compat.v1.assign(conv_var, var_weights))
 
             bias = variables[52 * 5 + unnormalized[j] * 5 + j * 2 + 1]
             shape = bias.shape.as_list()
             num_params = np.prod(shape)
             var_weights = weights[ptr:ptr + num_params].reshape(shape)
             ptr += num_params
-            assign_ops.append(tf.assign(bias, var_weights))
+            assign_ops.append(tf.compat.v1.assign(bias, var_weights))
 
             conv_var = variables[52 * 5 + unnormalized[j] * 5 + j * 2]
             shape = conv_var.shape.as_list()
@@ -601,6 +599,6 @@ def load_weights(variables, file_name):
                 (shape[3], shape[2], shape[0], shape[1]))
             var_weights = np.transpose(var_weights, (2, 3, 1, 0))
             ptr += num_params
-            assign_ops.append(tf.assign(conv_var, var_weights))
+            assign_ops.append(tf.compat.v1.assign(conv_var, var_weights))
 
         return assign_ops
