@@ -11,6 +11,7 @@ import glob
 print(tf.__version__)
 tf.compat.v1.disable_eager_execution()
 
+# Manually include yolov3.weights file
 # https://github.com/shahkaran76/yolo_v3-tensorflow-ipynb
 
 # ----- VARIABLES -------
