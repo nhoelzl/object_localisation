@@ -6,6 +6,7 @@ Created on 30.12.2020, by Nicole Hölzl
 import re
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 
 # Object Detection using YOLOv3:
@@ -23,6 +24,7 @@ _ANCHORS = [(10, 13), (16, 30), (33, 23),
             (116, 90), (156, 198), (373, 326)]
 _MODEL_SIZE = (416, 416)
 
+result_bounding_boxes = pd.DataFrame()
 
 # ----- BATCH NORMALIZATION -----
 def batch_norm(inputs, training, data_format):
@@ -51,11 +53,11 @@ def fixed_padding(inputs, kernel_size, data_format):
 
     if data_format == 'channels_first':
         padded_inputs = tf.pad(tensor=inputs, paddings=[[0, 0], [0, 0],
-                                        [pad_beg, pad_end],
-                                        [pad_beg, pad_end]])
+                                                        [pad_beg, pad_end],
+                                                        [pad_beg, pad_end]])
     else:
         padded_inputs = tf.pad(tensor=inputs, paddings=[[0, 0], [pad_beg, pad_end],
-                                        [pad_beg, pad_end], [0, 0]])
+                                                        [pad_beg, pad_end], [0, 0]])
     return padded_inputs
 
 
@@ -211,8 +213,8 @@ def yolo_layer(inputs, n_classes, anchors, img_size, data_format):
     n_anchors = len(anchors)
 
     inputs = tf.compat.v1.layers.conv2d(inputs, filters=n_anchors * (5 + n_classes),
-                              kernel_size=1, strides=1, use_bias=True,
-                              data_format=data_format)
+                                        kernel_size=1, strides=1, use_bias=True,
+                                        data_format=data_format)
 
     shape = inputs.get_shape().as_list()
     grid_shape = shape[2:4] if data_format == 'channels_first' else shape[1:3]
@@ -490,6 +492,8 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                                   size=(img.size[0] + img.size[1]) // 100)
         resize_factor = \
             (img.size[0] / model_size[0], img.size[1] / model_size[1])
+        
+        img_number = int(re.search(r'\d+', img_name)[0])
         for cls in range(len(class_names)):
             boxes = boxes_dict[cls]
             if np.size(boxes) != 0:
@@ -499,6 +503,9 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                     xy = [xy[i] * resize_factor[i % 2] for i in range(4)]
                     x0, y0 = xy[0], xy[1]
                     thickness = (img.size[0] + img.size[1]) // 200
+
+                    result_bounding_boxes['img_names'] = f"{img_number}.jpg"
+
                     for t in np.linspace(0, 1, thickness):
                         xy[0], xy[1] = xy[0] + t, xy[1] + t
                         xy[2], xy[3] = xy[2] - t, xy[3] - t
@@ -509,11 +516,20 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                     draw.rectangle(
                         [x0, y0 - text_size[1], x0 + text_size[0], y0],
                         fill=tuple(color))
+                        
+                    # up_left_x, up_left_y, low_right_x, low_right_y
+                    result_bounding_boxes["up_left_x"] = int(x0)
+                    result_bounding_boxes["up_left_y"] = int(y0 - text_size[1])
+                    result_bounding_boxes["low_right_x"] = int(x0 + text_size[0])
+                    result_bounding_boxes["low_right_y"] = int(y0)
+
                     draw.text((x0, y0 - text_size[1]), text, fill='black',
                               font=font)
 
-        # display image
-        img_number = int(re.search(r'\d+', img_name)[0])
+            result_bounding_boxes.head(5)
+            # save box coordinates to file
+            result_bounding_boxes.to_csv("data/results_yolo/human_pose_bbox.csv", index=True)
+        # save image results with bounding boxes and labels
         img.save(f"data/results_yolo/{img_number}.jpg")
 
 

@@ -1,15 +1,16 @@
 """
 Created on 29.01.2020, by Nicole Hölzl
 """
-
-import tensorflow as tf
-from tensorflow.python.keras.layers import  Input, Embedding, Dot, Reshape, Dense
-from tensorflow.python.keras.models import Model
-import yolov2 as yolo
+import os
 import glob
+import yolov2 as yolo
+import tensorflow as tf
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
-print(tf.__version__)
+
+print(f"Tensorflow version: {tf.__version__}")
 tf.compat.v1.disable_eager_execution()
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 # Manually include yolov3.weights file
 # https://github.com/shahkaran76/yolo_v3-tensorflow-ipynb
@@ -26,6 +27,8 @@ _MODEL_SIZE = (416, 416)
 # define path of input images
 PATH = 'data/samples_singleperson/'
 img_names = glob.glob(PATH + '*.jpg')
+
+# tweak the model so that it only will detect persons
 
 batch_size = len(img_names)
 batch = yolo.load_images(img_names, model_size=_MODEL_SIZE)
