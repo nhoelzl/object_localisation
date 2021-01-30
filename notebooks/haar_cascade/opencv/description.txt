@@ -1,0 +1,7 @@
+opencv artifacts go in here!
+
+e.g.
+-- build
+-- sources
+LICENSE.txt
+README.md
