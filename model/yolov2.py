@@ -491,10 +491,10 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype(font='data/files/futur.ttf',
                                   size=(img.size[0] + img.size[1]) // 100)
-        resize_factor = \
-            (img.size[0] / model_size[0], img.size[1] / model_size[1])
+        resize_factor = (img.size[0] / model_size[0], img.size[1] / model_size[1])
         
-        img_number = int(re.search(r'\d+', img_name)[0])
+        img_number = re.search(r'(\d+)', img_name)[0]
+        class_names = class_names[0]
         for cls in range(len(class_names)):
             boxes = boxes_dict[cls]
             if np.size(boxes) != 0:
@@ -519,7 +519,10 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                     draw.text((x0, y0 - text_size[1]), text, fill='black',
                               font=font)
                     # up_left_x, up_left_y, low_right_x, low_right_y
-                    intermediate_results.append([f"{img_number}.jpg", int(x0), int(y0 - text_size[1]), int(x0 + text_size[0]), int(y0)])
+                    intermediate_results.append([ f"{img_number}.jpg", int(xy[0] +  + (img.size[0] / model_size[0])), 
+                                                    int(xy[1] + (img.size[0] / model_size[0])), 
+                                                    int(xy[2] + (img.size[1] / model_size[1])), 
+                                                    int(xy[3] + (img.size[1] / model_size[1])) ])
                 # save box coordinates to file
                 results = pd.DataFrame(intermediate_results, columns=cols)
         # save image results with bounding boxes and labels
