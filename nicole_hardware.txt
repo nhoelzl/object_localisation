@@ -1,0 +1,27 @@
+
+     active environment : cov
+    active env location : /Users/nicoleholzl/opt/anaconda3/envs/cov
+            shell level : 1
+       user config file : /Users/nicoleholzl/.condarc
+ populated config files : /Users/nicoleholzl/.condarc
+          conda version : 4.9.2
+    conda-build version : 3.20.5
+         python version : 3.8.5.final.0
+       virtual packages : __osx=10.16=0
+                          __unix=0=0
+                          __archspec=1=x86_64
+       base environment : /Users/nicoleholzl/opt/anaconda3  (writable)
+           channel URLs : https://repo.anaconda.com/pkgs/main/osx-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/osx-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+          package cache : /Users/nicoleholzl/opt/anaconda3/pkgs
+                          /Users/nicoleholzl/.conda/pkgs
+       envs directories : /Users/nicoleholzl/opt/anaconda3/envs
+                          /Users/nicoleholzl/.conda/envs
+               platform : osx-64
+             user-agent : conda/4.9.2 requests/2.24.0 CPython/3.8.5 Darwin/20.3.0 OSX/10.16
+                UID:GID : 502:20
+             netrc file : None
+           offline mode : False
+
