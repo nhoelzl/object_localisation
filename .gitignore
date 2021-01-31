@@ -133,6 +133,10 @@ dmypy.json
 /data/images
 /data/mpii_human_pose_v1_u12_2
 
+# opencv files
+/notebooks/haar_cascade/opencv/*
+!/notebooks/haar_cascade/opencv/description.txt
+
 # Micha Notes
 .NOTES.txt
 Projects_2020.pdf
