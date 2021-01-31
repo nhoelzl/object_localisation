@@ -1,16 +1,16 @@
 Die Projektarbeit sollte sich dabei mit den nachfolgenden Aspekten beschäftigen:
 
-* Zweckmäßige Vorverarbeitung
+* Zweckmäßige Vorverarbeitung  (done)
 * Anwendung eines NN (selbst trainiert oder fertiges Modell oder adaptiertes Modell) auf n
-Objekte in den Bilddaten
+Objekte in den Bilddaten  (done)
 
 * Ausführliche Tests mit zweckmäßigen Fehlermetriken (z.B. Sensitivität, Spezifität, Jaccard
 Index, DICE Koeffizient, normalized surface distance (NSD),...)
- - Mean Average Precision = https://stackoverflow.com/questions/36274638/what-is-the-map-metric-and-how-is-it-calculated
+ - Mean Average Precision = https://stackoverflow.com/questions/36274638/what-is-the-map-metric-and-how-is-it-calculated  (done)
 
 * Fokus auf Datenaugmentierung – einerseits ev. für das Training, aber auch, um auch Tests
 mit unbekannten Körperorientierungen (z.B. rotierte Fußgänger) oder unbekannter Größe
-durchführen zu können.
+durchführen zu können.  (done)
 
 * Zum Zwecke der Vergleichbarkeit werden die Ergebnisse in standardisierter Form erwartet,
 nämlich:
@@ -20,7 +20,7 @@ nämlich:
 
     o Bei Lokalisierung: up_left_x, up_left_y, low_right_x, low_right_y des Rechtecks als
       Zeile in einem TXT-File mit „,“ als Separator, z.B. „481,35,765,464“. Für jedes Objekt
-      separate Zeile.
+      separate Zeile. (done)
 
     o Bei Klassifikation: TXT-File mit numerischer Kennung je Klasse in separater Zeile, z.B.
       „0“ für Männlich.
