@@ -14,6 +14,7 @@ tf.compat.v1.disable_eager_execution()
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 # Manually include yolov3.weights file
+# CREDITS GO TO ->
 # https://github.com/shahkaran76/yolo_v3-tensorflow-ipynb
 
 # ----- VARIABLES -------
@@ -26,8 +27,8 @@ _ANCHORS = [(10, 13), (16, 30), (33, 23),
 _MODEL_SIZE = (416, 416)
 
 # define path of input images
-# Training Data
-PATH = 'data/samples_singleperson/'
+# Test Data
+PATH = 'data/samples_test/'
 img_names = glob.glob(PATH + '*.jpg')
 
 batch_size = len(img_names)

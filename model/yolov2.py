@@ -23,8 +23,7 @@ _ANCHORS = [(10, 13), (16, 30), (33, 23),
             (30, 61), (62, 45), (59, 119),
             (116, 90), (156, 198), (373, 326)]
 _MODEL_SIZE = (416, 416)
-
-result_bounding_boxes = pd.DataFrame()
+results = pd.DataFrame()
 
 # ----- BATCH NORMALIZATION -----
 def batch_norm(inputs, training, data_format):
@@ -482,8 +481,10 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
         model_size: The input size of the model.
 
     Returns:
-        None.
+        None
     """
+    intermediate_results = []
+    cols = ["img_names", "up_left_x", "up_left_y", "low_right_x", "low_right_y"]
     for num, img_name, boxes_dict in zip(range(len(img_names)), img_names,
                                          boxes_dicts):
         img = Image.open(img_name)
@@ -504,8 +505,6 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                     x0, y0 = xy[0], xy[1]
                     thickness = (img.size[0] + img.size[1]) // 200
 
-                    result_bounding_boxes['img_names'] = f"{img_number}.jpg"
-
                     for t in np.linspace(0, 1, thickness):
                         xy[0], xy[1] = xy[0] + t, xy[1] + t
                         xy[2], xy[3] = xy[2] - t, xy[3] - t
@@ -516,21 +515,16 @@ def draw_boxes(img_names, boxes_dicts, class_names, model_size):
                     draw.rectangle(
                         [x0, y0 - text_size[1], x0 + text_size[0], y0],
                         fill=tuple(color))
-                        
-                    # up_left_x, up_left_y, low_right_x, low_right_y
-                    result_bounding_boxes["up_left_x"] = int(x0)
-                    result_bounding_boxes["up_left_y"] = int(y0 - text_size[1])
-                    result_bounding_boxes["low_right_x"] = int(x0 + text_size[0])
-                    result_bounding_boxes["low_right_y"] = int(y0)
 
                     draw.text((x0, y0 - text_size[1]), text, fill='black',
                               font=font)
-
-            result_bounding_boxes.head(5)
-            # save box coordinates to file
-            result_bounding_boxes.to_csv("data/results_yolo/human_pose_bbox.csv", index=True)
+                    # up_left_x, up_left_y, low_right_x, low_right_y
+                    intermediate_results.append([f"{img_number}.jpg", int(x0), int(y0 - text_size[1]), int(x0 + text_size[0]), int(y0)])
+                # save box coordinates to file
+                results = pd.DataFrame(intermediate_results, columns=cols)
         # save image results with bounding boxes and labels
         img.save(f"data/results_yolo/{img_number}.jpg")
+    results.to_csv("data/results_yolo/human_pose_bbox.csv", sep=",", index=False)
 
 
 # ----- CONVERTING WEIGHTS TO TENSORFLOW FORMAT ----
